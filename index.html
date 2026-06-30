@@ -21,7 +21,15 @@
   body{font-family:-apple-system,"Hiragino Kaku Gothic ProN","Yu Gothic UI","Meiryo",sans-serif;
     background:var(--bg); color:var(--txt); font-size:16px; line-height:1.5; padding-bottom:90px;}
   header{background:linear-gradient(135deg,var(--accent),var(--accent2)); color:#fff;
-    padding:12px 14px; position:sticky; top:0; z-index:50; box-shadow:0 2px 6px rgba(0,0,0,.2);}
+    padding:12px 14px; position:relative; z-index:30; box-shadow:0 2px 6px rgba(0,0,0,.2);}
+  /* スキャン中、カメラと「次の行」を画面上部に固定する */
+  #topPinned{position:sticky; top:0; z-index:45; background:var(--bg);}
+  body.scanning #topPinned{box-shadow:0 6px 10px -6px rgba(0,0,0,.25); padding:8px 0 6px; margin-bottom:6px;}
+  body.scanning header{display:none !important;}
+  body.scanning #loadCard, body.scanning #outCard{display:none !important;}
+  body.scanning #scanCard{margin-bottom:8px; padding:8px 10px;}
+  body.scanning #scanCard h2{display:none;}
+  body.scanning #nextRow{margin-bottom:8px;}
   header h1{margin:0; font-size:18px; display:flex; align-items:center; gap:8px;}
   header .sub{font-size:12px; opacity:.9; margin-top:2px;}
   .wrap{padding:12px; max-width:760px; margin:0 auto;}
@@ -41,7 +49,7 @@
   input[type=file]{display:none;}
   .hint{font-size:12.5px; color:var(--muted); margin-top:8px; line-height:1.45;}
   .scanbox{position:relative; background:#000; border-radius:12px; overflow:hidden; display:none;}
-  .scanbox video{width:100%; display:block;}
+  .scanbox video{width:100%; height:34vh; object-fit:cover; display:block;}
   .scanbox .reticle{position:absolute; inset:14% 14%; border:3px solid rgba(255,255,255,.85);
     border-radius:14px; box-shadow:0 0 0 2000px rgba(0,0,0,.25);}
   .scanbox .laser{position:absolute; left:14%; right:14%; height:2px; background:var(--curline);
@@ -105,11 +113,12 @@
 <body>
 <header>
   <h1>🏮 夏祭り抽選券 QR入力</h1>
-  <div class="sub">QRを読み取ると、次の行の部屋番号に自動入力します　<b>v2 (2026-06-30)</b></div>
+  <div class="sub">QRを読み取ると、次の行の部屋番号に自動入力します　<b>v3 (2026-06-30)</b></div>
 </header>
 
 <div class="wrap">
 
+  <div id="topPinned">
   <!-- 次に入力する行 -->
   <div class="nextrow" id="nextRow" style="display:none;">
     <div class="badge" id="nextBadge">次の行</div>
@@ -138,6 +147,7 @@
     </div>
     <div class="hint" id="scanHint"></div>
   </div>
+  </div><!-- /topPinned -->
 
   <!-- リスト読み込み -->
   <div class="card noprint" id="loadCard">
@@ -488,6 +498,8 @@
         $("scanBox").style.display = "block";
         $("btnStopLive").style.display = "inline-block";
         $("btnGrab").style.display = "inline-block";
+        document.body.classList.add("scanning");
+        window.scrollTo({top:0, behavior:"smooth"});
         $("liveStatus").textContent = "QRコードを枠内に映してください。";
         liveCanvas = document.createElement("canvas");
         liveCtx = liveCanvas.getContext("2d", {willReadFrequently:true});
@@ -527,6 +539,7 @@
     if(liveStream){ liveStream.getTracks().forEach(function(t){ t.stop(); }); liveStream = null; }
     $("scanBox").style.display = "none";
     $("btnStopLive").style.display = "none";
+    document.body.classList.remove("scanning");
     $("liveStatus").textContent = "ライブ読み取りを停止しました。";
   }
   $("btnStopLive").onclick = function(){ $("btnGrab").style.display = "none"; stopLive(); };

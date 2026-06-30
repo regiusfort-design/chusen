@@ -1,6 +1,6 @@
 /* 夏祭り抽選券 QR入力 ─ オフライン用サービスワーカー
    アプリを更新したら下の CACHE のバージョン番号(v2 の数字)を上げてください。 */
-var CACHE = "natsumatsuri-qr-v2";
+var CACHE = "natsumatsuri-qr-v3";
 var ASSETS = [
   "./",
   "index.html",
