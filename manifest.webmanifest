@@ -1,0 +1,15 @@
+{
+  "name": "夏祭り抽選券 QR入力",
+  "short_name": "抽選QR入力",
+  "description": "抽選券のQR(部屋番号)を読み取り、当選一覧に入力するアプリ",
+  "lang": "ja",
+  "start_url": "index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#faf6ef",
+  "theme_color": "#c0392b",
+  "icons": [
+    { "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
+  ]
+}
